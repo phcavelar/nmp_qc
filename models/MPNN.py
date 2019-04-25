@@ -81,12 +81,12 @@ class MPNN(nn.Module):
             # Nodes without edge set message to 0
             m = torch.unsqueeze(g, 3).expand_as(m) * m
 
-            m = torch.squeeze(torch.sum(m, 1))
+            m = torch.sum(m, 1)
 
             h_t = self.u[0].forward(h[t], m)
 
             # Delete virtual nodes
-            h_t = (torch.sum(h_in, 2).expand_as(h_t) > 0).type_as(h_t) * h_t
+            h_t = (torch.sum(h_in, 2, keepdim=True).expand_as(h_t) > 0).type_as(h_t) * h_t
             h.append(h_t)
 
         # Readout
